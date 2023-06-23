@@ -1,0 +1,57 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+  <div class="row mt-5 pt-3">
+    <div class="col-md-8 mx-auto"> <!-- Added "mx-auto" class to center the content -->
+      <h1 style="text-align: center; font-size: 36px;">Stay curious<span style="color: #ff69b4;">.</span><span style="color: #808080;">.</span><span style="color: #00bfff;">.</span></h1>
+      <hr>
+      <h4>Add Your Post</h4>
+      <div class="card my-3">
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            {{ form| crispy }}
+            <input class="btn btn-info btn-block btn-dark" type="submit" value="Post" />
+          </form>
+        </div>
+      </div>
+      {% for post in posts %}
+      <div class="card my-6">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="d-flex justify-content-between">
+                <a class="h5" href="{% url 'blog-post-detail' post.id %}">{{ post.title }}</a>
+                <small>{{ post.date_created }}</small><br>
+                <small class="text-justify"><strong>Author:</strong> {{ post.author }}</small>
+              </div>
+              <hr />
+              
+              <p class="text-justify my-3">{{ post.content }}</p>
+            </div>
+            <div>
+          <div>
+            <form action="{% url 'like-post' post.pk %}" method="POST" style="display: inline-block;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-xs" style="margin-left: 10px; font-size: 10px; padding: 2px 4px;">Like</button>
+              <p style="display: inline;">Likes: {{ post.likes.count }}</p>
+            </form>
+
+            <form action="{% url 'dislike-post' post.pk %}" method="POST" style="display: inline-block;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-xs" style="margin-left: 5px; font-size: 10px; padding: 2px 4px;">Dislike</button>
+              <p style="display: inline;">Dislikes: {{ post.dislikes.count }}</p>
+            </form>
+          </div>
+
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
